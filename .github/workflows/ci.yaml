@@ -170,13 +170,14 @@ jobs:
           URL=http://localhost:9684/metrics
 
           # Wait until the service esteblishes
-          exporter_ok=$(curl -i ${URL} \
+          metrics=$(curl ${URL} \
             --connect-timeout 5 \
             --retry 5 \
             --retry-delay 5 \
             --retry-max-time 60 \
-            --retry-connrefused  | grep "200 OK")
-          if [ ! "$exporter_ok" ]; then
+            --retry-connrefused)
+
+          if [[ "$metrics" ==  *"opensearch_dashboards_up 0.0"* ]]; then
             echo "ERROR: Prometheus exporter unavailable (connected to OSD on HTTP). Aborting..." >&2
             exit 1
           fi
@@ -187,33 +188,34 @@ jobs:
           sudo snap restart opensearch-dashboards
           sleep 10
 
-          # Wait until the service esteblishes
-          exporter_ok=$(curl -i ${URL} \
+          # Wait until the service establishes
+          metrics=$(curl ${URL} \
             --connect-timeout 5 \
             --retry 5 \
             --retry-delay 5 \
             --retry-max-time 60 \
-            --retry-connrefused  || true )
-          if [ "$exporter_ok" ]; then
+            --retry-connrefused)
+
+           if [[ "$metrics" ==  *"opensearch_dashboards_up 1.0"* ]]; then
             echo "ERROR: Prometheus exporter available when it should be connecting to a non-existent service. Aborting..." >&2
             exit 1
           fi
 
           echo "Exporter was down when it was supposed to be"
 
-          # Wrong setting defaults to HTTP
+          # Wrong setting defaults to HTTP, so the exporter should work
           sudo snap set opensearch-dashboards scheme=httpblabla
           sudo snap restart opensearch-dashboards
           sleep 10
 
-          # Wait until the service esteblishes
-          exporter_ok=$(curl -i ${URL} \
+          # Wait until the service establishes
+          metrics=$(curl ${URL} \
             --connect-timeout 5 \
             --retry 5 \
             --retry-delay 5 \
             --retry-max-time 60 \
-            --retry-connrefused  | grep "200 OK")
-          if [ ! "$exporter_ok" ]; then
+            --retry-connrefused)
+          if [[ "$metrics" ==  *"opensearch_dashboards_up 0.0"* ]]; then
             echo "ERROR: Prometheus exporter unavailable (connected to OSD on HTTP). Aborting..." >&2
             exit 1
           fi
