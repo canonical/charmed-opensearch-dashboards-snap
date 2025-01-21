@@ -28,14 +28,14 @@ jobs:
       - name: Upgrade linux deps
         run: |
           sudo apt-get update
-          
+
           # install security updates
           sudo apt-get -s dist-upgrade \
             | grep "^Inst" \
             | grep -i securi \
             | awk -F " " {'print $2'} \
             | xargs sudo apt-get install -y
-          
+
           sudo apt-get autoremove -y
           sudo apt-get clean -y
           sudo snap refresh snapd
@@ -62,9 +62,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Upgrade snapd
+      - name: Install snapd
         run: |
-          sudo snap refresh snapd
+          sudo apt-get update
+          sudo apt-get install -y snapd
+          sudo systemctl enable --now snapd.socket
 
       - name: Setup the required system configs OpenSearch
         run: |
@@ -113,14 +115,14 @@ jobs:
       - name: Install snap file for Opensearch Dashboards
         run: |
           version="$(yq .version < snap/snapcraft.yaml)"
-          
+
           sudo snap install opensearch-dashboards_${version}_amd64.snap --dangerous --jailmode
 
       - name: Test Opensearch Dashboards
         run: |
           sudo snap start opensearch-dashboards
 
-          # Wait until the service esteblishes
+          # Wait until the service establishes
           service_unavailable=$(curl -i http://localhost:5601 \
             --connect-timeout 5 \
             --retry 5 \
@@ -137,7 +139,7 @@ jobs:
             -H 'Accept: application/json' \
             -H 'Content-Type: application/json' \
             -H 'osd-xsrf:true' \
-            -d '{"username":"kibanaserver","password":"kibanaserver"}' | grep "200 OK") 
+            -d '{"username":"kibanaserver","password":"kibanaserver"}' | grep "200 OK")
 
           if [ ! "$authenticate_ok" ]; then
             echo "ERROR: Authentication failed with correct credentials. Aborting..." >&2
@@ -149,7 +151,7 @@ jobs:
             -H 'Accept: application/json' \
             -H 'Content-Type: application/json' \
             -H 'osd-xsrf:true' \
-            -d '{"username":"admin","password":"test"}' | grep "401 Unauthorized") 
+            -d '{"username":"admin","password":"test"}' | grep "401 Unauthorized")
 
           if [ ! "$wrong_credentials_fail" ]; then
             echo "ERROR: Authentication allowed with wrong credentials. Aborting..." >&2
@@ -183,7 +185,7 @@ jobs:
 
           sudo snap set opensearch-dashboards scheme=https
           sudo snap restart opensearch-dashboards
-          sleep 10 
+          sleep 10
 
           # Wait until the service esteblishes
           exporter_ok=$(curl -i ${URL} \

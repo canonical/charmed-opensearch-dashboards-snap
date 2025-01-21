@@ -85,8 +85,10 @@ apps:
       - network
       - network-bind
 
-  opensearch-dashboards-exporter-daemon:
+  exporter-daemon:
     daemon: simple
+    after:
+      - opensearch-dashboards-daemon
     install-mode: disable
     command: opt/opensearch-dashboards/start-exporter.sh
     restart-condition: always
