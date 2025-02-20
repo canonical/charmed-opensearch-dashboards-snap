@@ -17,7 +17,7 @@ jobs:
       snap-file: ${{ steps.build-snap.outputs.snap }}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -40,7 +40,7 @@ jobs:
         uses: snapcore/action-build@v1
 
       - name: Upload built snap job artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: opensearch-dashboards_snap_amd64
           path: "opensearch-dashboards_*.snap"
@@ -53,7 +53,7 @@ jobs:
       - build
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -87,7 +87,7 @@ jobs:
           sudo snap run opensearch.security-init --tls-priv-key-admin-pass=admin1234
 
       - name: Download snap file for OpenSearch Dashboards
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: opensearch-dashboards_snap_amd64
           path: .
