@@ -22,14 +22,14 @@ jobs:
       - ci-tests
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install required dependencies
         run: |
           sudo snap install yq
 
       - name: Download snap file
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: opensearch-dashboards_snap_amd64
           path: .
@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload snapcraft logs
         if: ${{ failure() && steps.publish.outcome == 'failure' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: snapcraft-release-logs
           path: ~/.local/state/snapcraft/log/
