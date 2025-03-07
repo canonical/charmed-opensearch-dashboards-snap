@@ -1,7 +1,7 @@
 name: opensearch-dashboards
 base: core24
 
-version: '2.17.0'
+version: '2.18.0'
 
 summary: 'OpenSearch Dashboards: community-driven OpenSearch visualization suite.'
 description: |
