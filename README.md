@@ -1,0 +1,1 @@
+# charmed-opensearch-dashboards-snap
