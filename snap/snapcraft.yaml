@@ -1,4 +1,4 @@
-name: opensearch-dashboards
+name: charmed-opensearch-dashboards
 base: core24
 
 version: '2.19.1'
@@ -46,8 +46,8 @@ hooks:
 
 
 environment:
-  SNAP_CURRENT: /snap/opensearch-dashboards/current
-  SNAP_DATA_CURRENT: /var/snap/opensearch-dashboards/current
+  SNAP_CURRENT: /snap/charmed-opensearch-dashboards/current
+  SNAP_DATA_CURRENT: /var/snap/charmed-opensearch-dashboards/current
 
   SNAP_LOG_DIR: ${SNAP_COMMON}/ops/snap/logs
 
