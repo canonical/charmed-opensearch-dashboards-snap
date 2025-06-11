@@ -31,7 +31,7 @@ jobs:
       - name: Download snap file
         uses: actions/download-artifact@v4
         with:
-          name: opensearch-dashboards_snap_amd64
+          name: charmed-opensearch-dashboards_snap_amd64
           path: .
 
       - name: Set snap release channel
@@ -48,7 +48,7 @@ jobs:
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
         with:
-          snap: opensearch-dashboards_${{env.version}}_amd64.snap
+          snap: charmed-opensearch-dashboards_${{env.version}}_amd64.snap
           release: ${{env.channel}}
 
       - name: Upload snapcraft logs
