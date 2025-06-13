@@ -1,6 +1,6 @@
-# OpenSearch Dasboards Snap
-[![Release](https://github.com/canonical/opensearch-dashboards-snap/actions/workflows/release.yaml/badge.svg)](https://github.com/canonical/opensearch-dashboards-snap/actions/workflows/release.yaml)
-[![Tests](https://github.com/canonical/opensearch-dashboards-snap/actions/workflows/ci.yaml/badge.svg)](https://github.com/canonical/opensearch-dashboards-snap/actions/workflows/ci.yaml)
+# Charmed OpenSearch Dasboards Snap
+[![Release](https://github.com/canonical/charmed-opensearch-dashboards-snap/actions/workflows/release.yaml/badge.svg)](https://github.com/canonical/charmed-opensearch-dashboards-snap/actions/workflows/release.yaml)
+[![Tests](https://github.com/canonical/charmed-opensearch-dashboards-snap/actions/workflows/ci.yaml/badge.svg)](https://github.com/canonical/chrmed-opensearch-dashboards-snap/actions/workflows/ci.yaml)
 
 
 [//]: # (<h1 align="center">)
@@ -17,18 +17,18 @@ with running and scaling your OpenSearch clusters.
 
 
 ### Installation:
-[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/opensearch-dashboards)
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/charmed-opensearch-dashboards)
 
 or:
 ```
-sudo snap install opensearch-dashboards --channel=2/edge
+sudo snap install charmed-opensearch-dashboards --channel=2/edge
 ```
 
-### Starting OpenSearch Dashboards:
+### Starting Charmed OpenSearch Dashboards:
 
 #### Parameters:
 
-The following parameters are configurable for the `opensearch-dashboard` daemon:
+The following parameters are configurable for the `charmed-opensearch-dashboard` daemon:
 
  - `host` -- hostname or IP where the service is to be exposed (default: `localhost`)
  - `port` -- port where the service is to be exposed (default: `5601`)
@@ -36,33 +36,33 @@ The following parameters are configurable for the `opensearch-dashboard` daemon:
 
 They can be set using the `snapctl` command, before starting the application. Such as:
 ```
-sudo snap set opensearch-dashboards port=1234
+sudo snap set charmed-opensearch-dashboards port=1234
 ```
 
 #### Starting up the service:
 
-Either if using the defautls (or when all parameters are set), `opensearch-dashboards` can be started
+Either if using the defautls (or when all parameters are set), `charmed-opensearch-dashboards` can be started
 by executing the following command
 ```
-sudo snap start opensearch-dashboards.daemon
+sudo snap start charmed-opensearch-dashboards.daemon
 ```
 
-### Testing the OpenSearch Dashboards setup:
+### Testing the Charmed OpenSearch Dashboards setup:
 
-Opensearch Dashboards by default are started up at http://localhost:5601, with default credentials
+Charmed Opensearch Dashboards by default are started up at http://localhost:5601, with default credentials
 (user: `kibanaserver`, password: `kibanaserver`).
 
-If you have an Opensearch instance running with default settings (https://localhost:9200), the Dashboard
+If you have an Charmed Opensearch instance running with default settings (https://localhost:9200), the Dashboard
 should be able to automatically connect.
 
 Any other potential connection (or other configuration information) should go to
 
 ```
-/snap/opensearch-dashboards/current/etc/opensearch-dashboards/opensearch_dashboards.yml
+/snap/charmed-opensearch-dashboards/current/etc/opensearch-dashboards/opensearch_dashboards.yml
 ```
 
 ## License
-The OpenSearch Dashboards Snap is free software, distributed under the Apache
+The Charmed OpenSearch Dashboards Snap is free software, distributed under the Apache
 Software License, version 2.0. See
-[LICENSE](https://github.com/canonical/opensearch-dashboards-snap/blob/main/licenses/LICENSE-snap)
+[LICENSE](https://github.com/canonical/charmed-opensearch-dashboards-snap/blob/main/licenses/LICENSE-snap)
 for more information.
