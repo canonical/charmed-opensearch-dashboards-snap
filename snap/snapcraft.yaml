@@ -59,7 +59,7 @@ environment:
   OPENSEARCH_DASHBOARDS_RO_HOME: ${SNAP_CURRENT}/usr/share/opensearch-dashboards
   OPENSEARCH_DASHBOARDS_BIN: ${OPENSEARCH_DASHBOARDS_RO_HOME}/bin
   OPENSEARCH_DASHBOARDS_DEPS_BIN: ${SNAP_CURRENT}/usr/bin
-  NODE_HOME: /snap/node/current
+  NODE_HOME: ${SNAP_CURRENT}
 
   # Read-write spaces
 
@@ -103,6 +103,7 @@ parts:
     plugin: nil
     stage-snaps:
       - yq
+      - node/18/stable
     stage-packages:
       - util-linux
       - curl
@@ -126,15 +127,15 @@ parts:
       mkdir -p "${target_dir}"
       cp -r helpers/ "${target_dir}/helpers"
 
-  nodejs:
-    plugin: nil
-    override-build: |
-      snap install node --channel=18/stable --classic
+  # nodejs:
+  #   plugin: nil
+  #   override-prime: |
+  #     snap install node --channel=18/stable --classic
 
   opensearch-dashboards:
-    plugin: npm
-    npm-include-node: true
-    npm-node-version: 18.16.0
+    plugin: nil
+    # npm-include-node: true
+    # npm-node-version: 18.16.0
     source: .
     override-build: |
       version="$(craftctl get version)"
