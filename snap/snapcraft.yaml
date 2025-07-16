@@ -103,7 +103,6 @@ parts:
     plugin: nil
     stage-snaps:
       - yq
-      - node/18/stable
     stage-packages:
       - util-linux
       - curl
@@ -127,15 +126,17 @@ parts:
       mkdir -p "${target_dir}"
       cp -r helpers/ "${target_dir}/helpers"
 
-  # nodejs:
-  #   plugin: nil
-  #   override-prime: |
-  #     snap install node --channel=18/stable --classic
+  nodejs:
+    plugin: npm
+    npm-include-node: true
+    npm-node-version: 18.19.0
+    source: .
+    override-build: |
+      echo '{"name": "install-node", "version": "1.0.0"}' > package.json
+      craftctl default
 
   opensearch-dashboards:
     plugin: nil
-    # npm-include-node: true
-    # npm-node-version: 18.16.0
     source: .
     override-build: |
       version="$(craftctl get version)"
