@@ -59,7 +59,7 @@ environment:
   OPENSEARCH_DASHBOARDS_RO_HOME: ${SNAP_CURRENT}/usr/share/opensearch-dashboards
   OPENSEARCH_DASHBOARDS_BIN: ${OPENSEARCH_DASHBOARDS_RO_HOME}/bin
   OPENSEARCH_DASHBOARDS_DEPS_BIN: ${SNAP_CURRENT}/usr/bin
-  NODE_HOME: ${OPENSEARCH_DASHBOARDS_RO_HOME}/node
+  NODE_HOME: ${SNAP_CURRENT}/node
 
   # Read-write spaces
 
@@ -141,7 +141,13 @@ parts:
       archive="opensearch-dashboards-${version}-linux-x64.tar.gz"
 
       # Download Opensearch Dashboards
-      url="https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/${version}/${archive}"
+      version="$(craftctl get version)"
+      series="${version%%.*}.x"
+      patch="ubuntu0"
+      release_date="20250716074412"
+
+      archive="opensearch-dashboards-${version}-${patch}-${release_date}-linux-x64.tar.gz"
+      url="https://launchpad.net/opensearch-dashboards-releases/${series}/dashboards-${version}-${patch}/+download/${archive}"
       curl  -L -o "${archive}" "${url}"
 
       # Extract and arrange
@@ -153,7 +159,7 @@ parts:
       mv "${CRAFT_PART_INSTALL}"/config/* "${CRAFT_PART_INSTALL}/etc/opensearch-dashboards/"
 
       declare -a resources=(
-        assets  bin  data  manifest.yml  node  node_modules  package.json  plugins  src LICENSE.txt  NOTICE.txt  README.txt
+        assets  bin  data  manifest.yml  node_modules  package.json  plugins  src LICENSE.txt  NOTICE.txt  README.txt
       )
 
       for res in "${resources[@]}"; do
