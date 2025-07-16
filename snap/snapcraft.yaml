@@ -59,7 +59,7 @@ environment:
   OPENSEARCH_DASHBOARDS_RO_HOME: ${SNAP_CURRENT}/usr/share/opensearch-dashboards
   OPENSEARCH_DASHBOARDS_BIN: ${OPENSEARCH_DASHBOARDS_RO_HOME}/bin
   OPENSEARCH_DASHBOARDS_DEPS_BIN: ${SNAP_CURRENT}/usr/bin
-  NODE_HOME: ${SNAP_CURRENT}/node
+  NODE_HOME: /snap/node/current
 
   # Read-write spaces
 
