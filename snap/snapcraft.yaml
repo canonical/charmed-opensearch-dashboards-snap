@@ -17,14 +17,6 @@ platforms:
   amd64:
 
 
-package-repositories:
-  - type: apt
-    components: [main]
-    suites: [noble]
-    key-id: 250888D21C2C3843BB4D5E35EB948C132E00C6DB
-    url: https://ppa.launchpadcontent.net/gabrielcocenza/prometheus-opensearch-dashboards-exporter/ubuntu
-
-
 system-usernames:
   snap_daemon: shared
 
@@ -70,9 +62,6 @@ environment:
   OPENSEARCH_DASHBOARDS_VARLIB: ${SNAP_COMMON}/var/lib/opensearch-dashboards
   OPENSEARCH_DASHBOARDS_TMPDIR: ${SNAP_COMMON}/usr/share/tmp
 
-  # include the dist-packages to be able to run the exporter
-  PYTHONPATH: "$SNAP/usr/lib/python3/dist-packages:$PYTHONPATH"
-
 
 apps:
   opensearch-dashboards-daemon:
@@ -81,18 +70,6 @@ apps:
     command: opt/opensearch-dashboards/start.sh
     restart-condition: always
     restart-delay: 20s
-    plugs:
-      - network
-      - network-bind
-
-  exporter-daemon:
-    daemon: simple
-    after:
-      - opensearch-dashboards-daemon
-    install-mode: disable
-    command: opt/opensearch-dashboards/start-exporter.sh
-    restart-condition: always
-    restart-delay: 5s
     plugs:
       - network
       - network-bind
@@ -106,7 +83,6 @@ parts:
     stage-packages:
       - util-linux
       - curl
-      - prometheus-opensearch-dashboards-exporter
 
   wrapper-scripts:
     plugin: nil
@@ -126,22 +102,21 @@ parts:
       mkdir -p "${target_dir}"
       cp -r helpers/ "${target_dir}/helpers"
 
-  nodejs:
-    plugin: nil
-    override-build: |
-      snap install node --channel=18/stable --classic
-
   opensearch-dashboards:
-    plugin: npm
-    npm-include-node: true
-    npm-node-version: 18.16.0
+    plugin: nil
     source: .
     override-build: |
       version="$(craftctl get version)"
       archive="opensearch-dashboards-${version}-linux-x64.tar.gz"
 
       # Download Opensearch Dashboards
-      url="https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/${version}/${archive}"
+      version="$(craftctl get version)"
+      series="${version%%.*}.x"
+      patch="ubuntu0"
+      release_date="20250717031914"
+
+      archive="opensearch-dashboards-${version}-${patch}-${release_date}-linux-x64.tar.gz"
+      url="https://launchpad.net/opensearch-dashboards-releases/${series}/dashboards-${version}-${patch}/+download/${archive}"
       curl  -L -o "${archive}" "${url}"
 
       # Extract and arrange
