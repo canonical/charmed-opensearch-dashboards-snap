@@ -1,9 +1,9 @@
 name: opensearch-dashboards
 base: core24
 
-version: "2.19.2"
+version: '2.19.2'
 
-summary: "OpenSearch Dashboards: community-driven OpenSearch visualization suite."
+summary: 'OpenSearch Dashboards: community-driven OpenSearch visualization suite.'
 description: |
     OpenSearch Dashboard is a community-driven, Apache 2.0-licensed open source
     user interface that lets you visualize your OpenSearch data and run and scale
@@ -14,153 +14,151 @@ grade: stable
 confinement: strict
 
 platforms:
-    amd64:
+  amd64:
+
 
 package-repositories:
-    - type: apt
-      components: [main]
-      suites: [noble]
-      key-id: 250888D21C2C3843BB4D5E35EB948C132E00C6DB
-      url: https://ppa.launchpadcontent.net/gabrielcocenza/prometheus-opensearch-dashboards-exporter/ubuntu
+  - type: apt
+    components: [main]
+    suites: [noble]
+    key-id: 250888D21C2C3843BB4D5E35EB948C132E00C6DB
+    url: https://ppa.launchpadcontent.net/gabrielcocenza/prometheus-opensearch-dashboards-exporter/ubuntu
+
 
 system-usernames:
-    snap_daemon: shared
+  snap_daemon: shared
+
 
 slots:
-    logs:
-        interface: content
-        source:
-            read:
-                - $SNAP_COMMON/var/log/opensearch-dashboards
+  logs:
+    interface: content
+    source:
+      read:
+        - $SNAP_COMMON/var/log/opensearch-dashboards
 
 hooks:
-    install:
-        plugs:
-            - network
-            - network-bind
-        environment:
-            OPS_ROOT: ${SNAP_CURRENT}/opt/opensearch-dashboards
+  install:
+    plugs:
+      - network
+      - network-bind
+    environment:
+      OPS_ROOT: ${SNAP_CURRENT}/opt/opensearch-dashboards
+
 
 environment:
-    SNAP_CURRENT: /snap/opensearch-dashboards/current
-    SNAP_DATA_CURRENT: /var/snap/opensearch-dashboards/current
+  SNAP_CURRENT: /snap/opensearch-dashboards/current
+  SNAP_DATA_CURRENT: /var/snap/opensearch-dashboards/current
 
-    SNAP_LOG_DIR: ${SNAP_COMMON}/ops/snap/logs
+  SNAP_LOG_DIR: ${SNAP_COMMON}/ops/snap/logs
 
-    OPS_ROOT: ${SNAP_CURRENT}/opt/opensearch-dashboards
+  OPS_ROOT: ${SNAP_CURRENT}/opt/opensearch-dashboards
 
-    # Read-only spaces -- executables
 
-    OPENSEARCH_DASHBOARDS_RO_HOME: ${SNAP_CURRENT}/usr/share/opensearch-dashboards
-    OPENSEARCH_DASHBOARDS_BIN: ${OPENSEARCH_DASHBOARDS_RO_HOME}/bin
-    OPENSEARCH_DASHBOARDS_DEPS_BIN: ${SNAP_CURRENT}/usr/bin
-    NODE_HOME: ${OPENSEARCH_DASHBOARDS_RO_HOME}/node
+  # Read-only spaces -- executables
 
-    # Read-write spaces
+  OPENSEARCH_DASHBOARDS_RO_HOME: ${SNAP_CURRENT}/usr/share/opensearch-dashboards
+  OPENSEARCH_DASHBOARDS_BIN: ${OPENSEARCH_DASHBOARDS_RO_HOME}/bin
+  OPENSEARCH_DASHBOARDS_DEPS_BIN: ${SNAP_CURRENT}/usr/bin
+  NODE_HOME: ${OPENSEARCH_DASHBOARDS_RO_HOME}/node
 
-    OPENSEARCH_DASHBOARDS_RW_HOME: ${SNAP_DATA_CURRENT}/usr/share/opensearch-dashboards
-    OPENSEARCH_DASHBOARDS_PATH_CONF: ${SNAP_DATA_CURRENT}/etc/opensearch-dashboards
+  # Read-write spaces
 
-    OPENSEARCH_DASHBOARDS_VARLOG: ${SNAP_COMMON}/var/log/opensearch-dashboards
-    OPENSEARCH_DASHBOARDS_VARLIB: ${SNAP_COMMON}/var/lib/opensearch-dashboards
-    OPENSEARCH_DASHBOARDS_TMPDIR: ${SNAP_COMMON}/usr/share/tmp
+  OPENSEARCH_DASHBOARDS_RW_HOME: ${SNAP_DATA_CURRENT}/usr/share/opensearch-dashboards
+  OPENSEARCH_DASHBOARDS_PATH_CONF: ${SNAP_DATA_CURRENT}/etc/opensearch-dashboards
 
-    # include the dist-packages to be able to run the exporter
-    PYTHONPATH: "$SNAP/usr/lib/python3/dist-packages:$PYTHONPATH"
+  OPENSEARCH_DASHBOARDS_VARLOG: ${SNAP_COMMON}/var/log/opensearch-dashboards
+  OPENSEARCH_DASHBOARDS_VARLIB: ${SNAP_COMMON}/var/lib/opensearch-dashboards
+  OPENSEARCH_DASHBOARDS_TMPDIR: ${SNAP_COMMON}/usr/share/tmp
+
+  # include the dist-packages to be able to run the exporter
+  PYTHONPATH: "$SNAP/usr/lib/python3/dist-packages:$PYTHONPATH"
+
 
 apps:
-    opensearch-dashboards-daemon:
-        daemon: simple
-        install-mode: disable
-        command: opt/opensearch-dashboards/start.sh
-        restart-condition: always
-        restart-delay: 20s
-        plugs:
-            - network
-            - network-bind
+  opensearch-dashboards-daemon:
+    daemon: simple
+    install-mode: disable
+    command: opt/opensearch-dashboards/start.sh
+    restart-condition: always
+    restart-delay: 20s
+    plugs:
+      - network
+      - network-bind
 
-    exporter-daemon:
-        daemon: simple
-        after:
-            - opensearch-dashboards-daemon
-        install-mode: disable
-        command: opt/opensearch-dashboards/start-exporter.sh
-        restart-condition: always
-        restart-delay: 5s
-        plugs:
-            - network
-            - network-bind
+  exporter-daemon:
+    daemon: simple
+    after:
+      - opensearch-dashboards-daemon
+    install-mode: disable
+    command: opt/opensearch-dashboards/start-exporter.sh
+    restart-condition: always
+    restart-delay: 5s
+    plugs:
+      - network
+      - network-bind
+
 
 parts:
-    dependencies:
-        plugin: nil
-        stage-snaps:
-            - yq
-        stage-packages:
-            - util-linux
-            - curl
-            - prometheus-opensearch-dashboards-exporter
+  dependencies:
+    plugin: nil
+    stage-snaps:
+      - yq
+    stage-packages:
+      - util-linux
+      - curl
+      - prometheus-opensearch-dashboards-exporter
 
-    wrapper-scripts:
-        plugin: nil
-        source: ./scripts
-        source-type: local
-        override-build: |
-            target_dir="${CRAFT_PART_INSTALL}/opt/opensearch-dashboards"
-            mkdir -p "${target_dir}"
-            cp -r wrappers/. "${target_dir}"
+  wrapper-scripts:
+    plugin: nil
+    source: ./scripts
+    source-type: local
+    override-build: |
+      target_dir="${CRAFT_PART_INSTALL}/opt/opensearch-dashboards"
+      mkdir -p "${target_dir}"
+      cp -r wrappers/. "${target_dir}"
 
-    helper-scripts:
-        plugin: nil
-        source: .
-        source-type: local
-        override-build: |
-            target_dir="${CRAFT_PART_INSTALL}/opt/opensearch-dashboards"
-            mkdir -p "${target_dir}"
-            cp -r helpers/ "${target_dir}/helpers"
+  helper-scripts:
+    plugin: nil
+    source: .
+    source-type: local
+    override-build: |
+      target_dir="${CRAFT_PART_INSTALL}/opt/opensearch-dashboards"
+      mkdir -p "${target_dir}"
+      cp -r helpers/ "${target_dir}/helpers"
 
-    nodejs:
-        plugin: npm
-        npm-include-node: true
-        npm-node-version: 18.19.0
-        source: .
-        override-build: |
-            echo '{"name": "install-node", "version": "1.0.0"}' > package.json
-            craftctl default
+  opensearch-dashboards:
+    plugin: nil
+    source: .
+    override-build: |
+      version="$(craftctl get version)"
+      archive="opensearch-dashboards-${version}-linux-x64.tar.gz"
 
-    opensearch-dashboards:
-        plugin: nil
-        source: .
-        override-build: |
-            version="$(craftctl get version)"
-            archive="opensearch-dashboards-${version}-linux-x64.tar.gz"
+      # Download Opensearch Dashboards
+      version="$(craftctl get version)"
+      series="${version%%.*}.x"
+      patch="ubuntu0"
+      release_date="20250716074412"
 
-            # Download Opensearch Dashboards
-            version="$(craftctl get version)"
-            series="${version%%.*}.x"
-            patch="ubuntu0"
-            release_date="20250717031914"
+      archive="opensearch-dashboards-${version}-${patch}-${release_date}-linux-x64.tar.gz"
+      url="https://launchpad.net/opensearch-dashboards-releases/${series}/dashboards-${version}-${patch}/+download/${archive}"
+      curl  -L -o "${archive}" "${url}"
 
-            archive="opensearch-dashboards-${version}-${patch}-${release_date}-linux-x64.tar.gz"
-            url="https://launchpad.net/opensearch-dashboards-releases/${series}/dashboards-${version}-${patch}/+download/${archive}"
-            curl  -L -o "${archive}" "${url}"
+      # Extract and arrange
+      tar -xzf "${archive}" -C "${CRAFT_PART_INSTALL}/" --strip-components=1
 
-            # Extract and arrange
-            tar -xzf "${archive}" -C "${CRAFT_PART_INSTALL}/" --strip-components=1
+      mkdir -p "${CRAFT_PART_INSTALL}/usr/share/opensearch-dashboards"
 
-            mkdir -p "${CRAFT_PART_INSTALL}/usr/share/opensearch-dashboards"
+      mkdir -p "${CRAFT_PART_INSTALL}/etc/opensearch-dashboards/"
+      mv "${CRAFT_PART_INSTALL}"/config/* "${CRAFT_PART_INSTALL}/etc/opensearch-dashboards/"
 
-            mkdir -p "${CRAFT_PART_INSTALL}/etc/opensearch-dashboards/"
-            mv "${CRAFT_PART_INSTALL}"/config/* "${CRAFT_PART_INSTALL}/etc/opensearch-dashboards/"
+      declare -a resources=(
+        assets  bin  data  manifest.yml  node  node_modules  package.json  plugins  src LICENSE.txt  NOTIXE.txt  README.txt
+      )
 
-            declare -a resources=(
-              assets  bin  data  manifest.yml  node  node_modules  package.json  plugins  src LICENSE.txt  NOTICE.txt  README.txt
-            )
+      for res in "${resources[@]}"; do
+          mv "${CRAFT_PART_INSTALL}/${res}" "${CRAFT_PART_INSTALL}/usr/share/opensearch-dashboards/"
+      done
+      chmod -R 755 "${CRAFT_PART_INSTALL}/usr/share/opensearch-dashboards/bin"
 
-            for res in "${resources[@]}"; do
-                mv "${CRAFT_PART_INSTALL}/${res}" "${CRAFT_PART_INSTALL}/usr/share/opensearch-dashboards/"
-            done
-            chmod -R 755 "${CRAFT_PART_INSTALL}/usr/share/opensearch-dashboards/bin"
-
-            # Final clean-up
-            rm "${archive}"
+      # Final clean-up
+      rm "${archive}"
