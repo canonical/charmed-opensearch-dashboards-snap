@@ -130,13 +130,13 @@ parts:
     plugin: nil
     source: .
     override-build: |
-      # Download Opensearch Dashboards
       version="$(craftctl get version)"
       series="${version%%.*}.x"
       patch="ubuntu0"
       release_date="20250721150133"
-
       archive="opensearch-dashboards-${version}-${patch}-${release_date}-linux-x64.tar.gz"
+
+      # Download Opensearch Dashboards
       url="https://launchpad.net/opensearch-dashboards-releases/${series}/${version}-${patch}/+download/${archive}"
       curl  -L -o "${archive}" "${url}"
 
