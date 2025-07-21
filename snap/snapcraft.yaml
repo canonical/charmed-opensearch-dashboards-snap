@@ -134,8 +134,9 @@ parts:
       series="${version%%.*}.x"
       patch="ubuntu0"
       release_date="20250717031914"
-
       archive="opensearch-dashboards-${version}-${patch}-${release_date}-linux-x64.tar.gz"
+
+      # Download Opensearch Dashboards
       url="https://launchpad.net/opensearch-dashboards-releases/${series}/dashboards-${version}-${patch}/+download/${archive}"
       curl  -L -o "${archive}" "${url}"
 
