@@ -137,10 +137,10 @@ parts:
       version="$(craftctl get version)"
       series="${version%%.*}.x"
       patch="ubuntu0"
-      release_date="20250717031914"
+      release_date="20250721150133"
 
       archive="opensearch-dashboards-${version}-${patch}-${release_date}-linux-x64.tar.gz"
-      url="https://launchpad.net/opensearch-dashboards-releases/${series}/dashboards-${version}-${patch}/+download/${archive}"
+      url="https://launchpad.net/opensearch-dashboards-releases/${series}/${version}-${patch}/+download/${archive}"
       curl  -L -o "${archive}" "${url}"
 
       # Extract and arrange
