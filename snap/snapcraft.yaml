@@ -126,22 +126,18 @@ parts:
       mkdir -p "${target_dir}"
       cp -r helpers/ "${target_dir}/helpers"
 
-  nodejs:
-    plugin: nil
-    override-build: |
-      snap install node --channel=18/stable --classic
-
   opensearch-dashboards:
-    plugin: npm
-    npm-include-node: true
-    npm-node-version: 18.16.0
+    plugin: nil
     source: .
     override-build: |
       version="$(craftctl get version)"
-      archive="opensearch-dashboards-${version}-linux-x64.tar.gz"
+      series="${version%%.*}.x"
+      patch="ubuntu0"
+      release_date="20250721150133"
+      archive="opensearch-dashboards-${version}-${patch}-${release_date}-linux-x64.tar.gz"
 
       # Download Opensearch Dashboards
-      url="https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/${version}/${archive}"
+      url="https://launchpad.net/opensearch-dashboards-releases/${series}/${version}-${patch}/+download/${archive}"
       curl  -L -o "${archive}" "${url}"
 
       # Extract and arrange
