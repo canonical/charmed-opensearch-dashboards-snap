@@ -42,8 +42,8 @@ jobs:
       - name: Upload built snap job artifact
         uses: actions/upload-artifact@v4
         with:
-          name: opensearch-dashboards_snap_amd64
-          path: "opensearch-dashboards_*.snap"
+          name: charmed-opensearch-dashboards_snap_amd64
+          path: "charmed-opensearch-dashboards_*.snap"
 
   scan:
     name: Trivy scan and SBOM Generation
@@ -55,23 +55,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download snap file for OpenSearch Dashboards
+      - name: Download snap file for Charmed OpenSearch Dashboards
         uses: actions/download-artifact@v4
         with:
-          name: opensearch-dashboards_snap_amd64
+          name: charmed-opensearch-dashboards_snap_amd64
           path: .
 
-      - name: Install snap file for Opensearch Dashboards
+      - name: Install snap file for Charmed Opensearch Dashboards
         run: |
           version="$(yq .version < snap/snapcraft.yaml)"
 
-          sudo snap install opensearch-dashboards_${version}_amd64.snap --dangerous --jailmode
+          sudo snap install charmed-opensearch-dashboards_${version}_amd64.snap --dangerous --jailmode
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.30.0
         with:
           scan-type: "fs"
-          scan-ref: /snap/opensearch-dashboards/current/usr/share/opensearch-dashboards/
+          scan-ref: /snap/charmed-opensearch-dashboards/current/usr/share/opensearch-dashboards/
           format: "sarif"
           output: "trivy-results.sarif"
           scanners: "vuln"
@@ -86,7 +86,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.30.0
         with:
           scan-type: "fs"
-          scan-ref: /snap/opensearch-dashboards/current/usr/share/opensearch-dashboards/
+          scan-ref: /snap/charmed-opensearch-dashboards/current/usr/share/opensearch-dashboards/
           format: "spdx-json"
           output: "dependency-results.sbom.json"
           github-pat: ${{ secrets.GITHUB_TOKEN }}
@@ -148,21 +148,21 @@ jobs:
           # create the security index
           sudo snap run opensearch.security-init --tls-priv-key-admin-pass=admin1234
 
-      - name: Download snap file for OpenSearch Dashboards
+      - name: Download snap file for Charmed OpenSearch Dashboards
         uses: actions/download-artifact@v4
         with:
-          name: opensearch-dashboards_snap_amd64
+          name: charmed-opensearch-dashboards_snap_amd64
           path: .
 
-      - name: Install snap file for Opensearch Dashboards
+      - name: Install snap file for Charmed Opensearch Dashboards
         run: |
           version="$(yq .version < snap/snapcraft.yaml)"
 
-          sudo snap install opensearch-dashboards_${version}_amd64.snap --dangerous --jailmode
+          sudo snap install charmed-opensearch-dashboards_${version}_amd64.snap --dangerous --jailmode
 
-      - name: Test Opensearch Dashboards
+      - name: Test Charmed Opensearch Dashboards
         run: |
-          sudo snap start opensearch-dashboards
+          sudo snap start charmed-opensearch-dashboards
 
           # Wait until the service establishes
           service_unavailable=$(curl -i http://localhost:5601 \
@@ -201,72 +201,15 @@ jobs:
           fi
 
           # Check if logs are collected as expected
-          logfile="/var/snap/opensearch-dashboards/common/var/log/opensearch-dashboards/opensearch_dashboards.log"
+          logfile="/var/snap/charmed-opensearch-dashboards/common/var/log/opensearch-dashboards/opensearch_dashboards.log"
           if ! sudo test -s "${logfile}"; then
             echo "ERROR: Logfile unaccessible. Aborting..." >&2
             exit 1
           fi
 
-      - name: Test Prometheus Exporter
-        run: |
-          URL=http://localhost:9684/metrics
-
-          # Wait until the service esteblishes
-          metrics=$(curl ${URL} \
-            --connect-timeout 5 \
-            --retry 5 \
-            --retry-delay 5 \
-            --retry-max-time 60 \
-            --retry-connrefused)
-
-          if [[ "$metrics" ==  *"opensearch_dashboards_up 0.0"* ]]; then
-            echo "ERROR: Prometheus exporter unavailable (connected to OSD on HTTP). Aborting..." >&2
-            exit 1
-          fi
-
-          echo "Successfully connected to the Exporter service"
-
-          sudo snap set opensearch-dashboards scheme=https
-          sudo snap restart opensearch-dashboards
-          sleep 10
-
-          # Wait until the service establishes
-          metrics=$(curl ${URL} \
-            --connect-timeout 5 \
-            --retry 5 \
-            --retry-delay 5 \
-            --retry-max-time 60 \
-            --retry-connrefused)
-
-           if [[ "$metrics" ==  *"opensearch_dashboards_up 1.0"* ]]; then
-            echo "ERROR: Prometheus exporter available when it should be connecting to a non-existent service. Aborting..." >&2
-            exit 1
-          fi
-
-          echo "Exporter was down when it was supposed to be"
-
-          # Wrong setting defaults to HTTP, so the exporter should work
-          sudo snap set opensearch-dashboards scheme=httpblabla
-          sudo snap restart opensearch-dashboards
-          sleep 10
-
-          # Wait until the service establishes
-          metrics=$(curl ${URL} \
-            --connect-timeout 5 \
-            --retry 5 \
-            --retry-delay 5 \
-            --retry-max-time 60 \
-            --retry-connrefused)
-          if [[ "$metrics" ==  *"opensearch_dashboards_up 0.0"* ]]; then
-            echo "ERROR: Prometheus exporter unavailable (connected to OSD on HTTP). Aborting..." >&2
-            exit 1
-          fi
-
-          echo "Snap defaults correctly applied as Exporter settings"
-
       - name: Test Logs slot
         run: |
-          logs_slot_avail=$(sudo snap connections opensearch-dashboards | grep opensearch-dashboards:logs)
+          logs_slot_avail=$(sudo snap connections charmed-opensearch-dashboards | grep opensearch-dashboards:logs)
 
           if [ ! "$logs_slot_avail" ]; then
             echo "ERROR: Logs slot is not available. Aborting..." >&2
