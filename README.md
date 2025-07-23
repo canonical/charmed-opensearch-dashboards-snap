@@ -52,7 +52,7 @@ sudo snap start charmed-opensearch-dashboards.daemon
 Charmed Opensearch Dashboards by default are started up at http://localhost:5601, with default credentials
 (user: `kibanaserver`, password: `kibanaserver`).
 
-If you have an Charmed Opensearch instance running with default settings (https://localhost:9200), the Dashboard
+If you have an Opensearch instance running with default settings (https://localhost:9200), the Dashboard
 should be able to automatically connect.
 
 Any other potential connection (or other configuration information) should go to
@@ -64,5 +64,5 @@ Any other potential connection (or other configuration information) should go to
 ## License
 The Charmed OpenSearch Dashboards Snap is free software, distributed under the Apache
 Software License, version 2.0. See
-[LICENSE](https://github.com/canonical/charmed-opensearch-dashboards-snap/blob/main/licenses/LICENSE-snap)
+[LICENSE](https://github.com/canonical/charmed-opensearch-dashboards-snap/blob/2/edge/licenses/LICENSE-snap)
 for more information.
