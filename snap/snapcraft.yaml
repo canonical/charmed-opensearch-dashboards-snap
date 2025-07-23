@@ -21,8 +21,8 @@ package-repositories:
   - type: apt
     components: [main]
     suites: [noble]
-    key-id: 250888D21C2C3843BB4D5E35EB948C132E00C6DB
-    url: https://ppa.launchpadcontent.net/gabrielcocenza/prometheus-opensearch-dashboards-exporter/ubuntu
+    key-id: 6676E3F1A76ADBE4488944BF7D1A96D4BF78C79E
+    url: https://ppa.launchpadcontent.net/data-platform/prometheus-opensearch-dashboards-exporter/ubuntu
 
 
 system-usernames:
